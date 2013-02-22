@@ -1,0 +1,31 @@
+<html>
+<head>
+  <title>MakerBot Control Panel</title>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <link href='http://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
+  <style>
+    body {
+      font-family: 'Lato', sans-serif;
+      background: url("images/txture.png");
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <h1>MakerBot Control Panel</h1>
+  Current status: <span id="status"></span>
+  <script type="text/javascript">
+    var getSwitchStatus = function(){
+      $.ajax({
+        headers: {Authorization:"MoKAd3h5EV0nqNq2K7bhAeDOdHZo8nn8Z00S6Tyr"},
+        dataType: "json",
+        url: "switch",
+        success: function(data) {$('#status').text(data.status);}
+      });
+    }
+    getSwitchStatus();
+    setInterval( "getSwitchStatus()", 5000 );
+    
+  </script>
+</body>
+</html>
