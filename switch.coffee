@@ -1,13 +1,29 @@
-SerialPort = require("serialport").SerialPort
-spSwitcher = new SerialPort("/dev/tty.usbserial-A6006jVQ", {
-    baudrate: 57600
-})
+#!/usr/bin/env coffee
 
+program = require('commander')
+clc = require('cli-color')
 sys = require("sys")
 fs = require("fs")
 stdin = process.openStdin()
 switchIsReady = false
 switchIsOn = true
+
+program
+  .version("0.3")
+  .usage("./switch.coffee [options] <tty>")
+  .option("-p, --port <n>", "specify a TCP port to listen on [8080]",8080, parseInt)
+  .parse(process.argv)
+
+if program.args.length != 1
+  console.log("#{clc.red("Error:")} You need to specify a tty which should be used to communicate with the switch.")
+  process.exit(1);
+
+
+
+SerialPort = require("serialport").SerialPort
+spSwitcher = new SerialPort(program.args[0], {
+    baudrate: 57600
+})
 
 switchOn = (callback) ->
   if switchIsReady
@@ -17,6 +33,8 @@ switchOn = (callback) ->
       if callback
         callback(err)
     )
+  else
+    callback(new Error("Switch is not connected via USB")) if callback
 
 switchOff = (callback) ->
   if switchIsReady
@@ -25,7 +43,9 @@ switchOff = (callback) ->
         switchIsOn = false
       if callback
         callback(err)
-    ) 
+    )
+  else
+    callback(new Error("Switch is not connected via USB")) if callback
 
 spSwitcher.on("open",->
   spSwitcher.on('data', (data) ->
@@ -40,6 +60,9 @@ stdin.addListener("data", (input) ->
     # note:  input is an object, and when converted to a string it will
     # end with a linefeed.  
     command = input.toString()[0..-2]
+    # HACK HACK HACK
+    if command == "on" then switchIsOn = true else switchIsOn = false
+    # HACK HACK END
 
     switchOff() if command == "off"
     switchOn() if command == "on"
@@ -61,19 +84,26 @@ checkSecretKey = (request, response, callback) ->
     console.log("Not authorized")
     response.send(401, {error: "not authorized"})
 
-basicAuth = express.basicAuth(
-  ((username, password) -> username == 'maker' && password == 'mattercompiler')
-  ,'MakerBot Control Panel');
 
 app.all('/*', (req, res, next) ->
     res.header("Access-Control-Allow-Origin", "*")
     res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
     res.header("Access-Control-Allow-Headers", "Authorization")
     res.header("Content-Type", 'application/json, text/javascript')
+    if req.method == 'OPTIONS'
+      res.send(200)
+      return
     next()
 )
 
 app.get("/switch", (req, res) ->
+  checkSecretKey(req, res, ->
+    switchStatus = if switchIsOn then "on" else "off"
+    res.send(200, {status: switchStatus})
+  )
+)
+
+app.options("/switch", (req, res) ->
   checkSecretKey(req, res, ->
     switchStatus = if switchIsOn then "on" else "off"
     res.send(200, {status: switchStatus})
@@ -96,5 +126,5 @@ app.post("/switch", (req, res, next) ->
   )
 )
 
-app.listen(8080)
-console.log("Listening on port 8080")
+app.listen(program.port)
+console.log("Listening on port #{program.port}")
