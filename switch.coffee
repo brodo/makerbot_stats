@@ -18,7 +18,7 @@ if program.args.length != 1
   console.log("#{clc.red("Error:")} You need to specify a tty which should be used to communicate with the switch.")
   process.exit(1);
 
-
+console.log program.args[0]
 
 SerialPort = require("serialport").SerialPort
 spSwitcher = new SerialPort(program.args[0], {
@@ -60,10 +60,6 @@ stdin.addListener("data", (input) ->
     # note:  input is an object, and when converted to a string it will
     # end with a linefeed.  
     command = input.toString()[0..-2]
-    # HACK HACK HACK
-    if command == "on" then switchIsOn = true else switchIsOn = false
-    # HACK HACK END
-
     switchOff() if command == "off"
     switchOn() if command == "on"
 )
