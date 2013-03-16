@@ -99,37 +99,42 @@ byteNames =
     FILESYSTEM_ERROR: 4
     DIRECTORY_ERROR: 5
 
-intTypes =
+numberTypes =
   UInt8: 
     size: 1
-  UInt16:
+  UInt16LE:
     size: 2
-  Int16:
+  Int16LE:
     size: 2
-  UInt32:
+  UInt32LE:
     size: 4
-  Int32:
+  Int32LE:
+    size: 4
+  FloatLE:
     size: 4
   
 
 
 addAttributesToObject = (fromObject, toObject) ->
-     toObject[key] = fromObject[key] for key in Object.keys(fromObject)
-     return toObject
+  toObject[key] = fromObject[key] for key in Object.keys(fromObject)
+  return toObject
 
-allCodes = {}
-codeArray = (byteNames[category] for category of byteNames)
-addAttributesToObject(category, allCodes) for category in codeArray
+
 
 nameForByte = (byte) ->
-     for codeName, codeNumber of allCodes
+  for codeName, codeNumber of byteNames.HOST_QUERY_COMMANDS
+    return codeName if codeNumber == byte
+  for codeName, codeNumber of byteNames.HOST_ACTION_COMMANDS
           return codeName if codeNumber == byte
+  for codeName, codeNumber of byteNames.RESPONSE_CODES
+          return codeName if codeNumber == byte
+
+
 isHostCommand = (command) ->
   command of byteNames.HOST_QUERY_COMMANDS or command of byteNames.HOST_ACTION_COMMANDS
 
 module.exports.byteNames = byteNames
-module.exports.codes = allCodes
-module.exports.intTypes = intTypes
+module.exports.numberTypes = numberTypes
 module.exports.nameForByte = nameForByte
 module.exports.isHostCommand = isHostCommand
 module.exports.addAttributesToObject = addAttributesToObject
