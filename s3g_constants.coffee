@@ -50,8 +50,7 @@ byteNames =
     BUILD_END_NOTIFICATION: 154
     QUEUE_EXTENDED_POINT_ACCELERATED: 155
     X3G_VERSION: 157
-  # TODO: Change name to tool
-  SLAVE_QUERY_COMMANDS: 
+  TOOL_QUERY_COMMANDS: 
     GET_VERSION: 0
     GET_TOOLHEAD_TEMP: 2
     GET_MOTOR_1_SPEED_RPM: 17
@@ -64,7 +63,7 @@ byteNames =
     IS_PLATFORM_READY: 35
     GET_TOOL_STATUS: 36
     GET_PID_STATE: 37
-  SLAVE_ACTION_COMMANDS: 
+  TOOL_ACTION_COMMANDS: 
     INIT: 1
     SET_TOOLHEAD_TARGET_TEMP: 3
     SET_MOTOR_1_SPEED_RPM: 6
@@ -121,7 +120,7 @@ addAttributesToObject = (fromObject, toObject) ->
 
 
 
-nameForByte = (byte) ->
+nameForHostByte = (byte) ->
   for codeName, codeNumber of byteNames.HOST_QUERY_COMMANDS
     return codeName if codeNumber == byte
   for codeName, codeNumber of byteNames.HOST_ACTION_COMMANDS
@@ -129,12 +128,18 @@ nameForByte = (byte) ->
   for codeName, codeNumber of byteNames.RESPONSE_CODES
           return codeName if codeNumber == byte
 
+nameForToolByte = (byte) ->
+  for codeName, codeNumber of byteNames.TOOL_QUERY_COMMANDS
+    return codeName if codeNumber == byte
+  for codeName, codeNumber of byteNames.TOOL_ACTION_COMMANDS
+          return codeName if codeNumber == byte
 
 isHostCommand = (command) ->
   command of byteNames.HOST_QUERY_COMMANDS or command of byteNames.HOST_ACTION_COMMANDS
 
 module.exports.byteNames = byteNames
 module.exports.numberTypes = numberTypes
-module.exports.nameForByte = nameForByte
+module.exports.nameForToolByte = nameForToolByte
+module.exports.nameForHostByte = nameForHostByte
 module.exports.isHostCommand = isHostCommand
 module.exports.addAttributesToObject = addAttributesToObject

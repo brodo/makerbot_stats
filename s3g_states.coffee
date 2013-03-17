@@ -11,7 +11,10 @@ module.exports  =
     CLEAR_BUFFER: true # No argument or response
     ABORT_IMMEDIATELY: true # No argument or response
     PAUSE: true # No argument or response
-    TOOL_QUERY: true
+    TOOL_QUERY:  
+      parameters:
+        [ {TOOL_INDEX: "UInt8"},
+          {PAYLOAD: "ToolQuery"}]
     IS_FINISHED:
       responseParameters:
         [ {IS_FINISHED: "UInt8"} ]
@@ -116,7 +119,7 @@ module.exports  =
         [ {TOOL_ID: "UInt8"},
           {ACTION_COMMAND: "UInt8"},
           {LENGTH: "UInt8"},
-          {TOOL_COMMAND: "Bytes"}]
+          {TOOL_COMMAND: "ToolPayload"}]
     ENABLE_AXES:
       parameters:
         [ {BITFIELD: "UInt8"} ]
@@ -229,6 +232,87 @@ module.exports  =
     DOWNSTREAM_TIMEOUT: true
     TOOL_LOCK_TIMEOUT: true
     CANCEL_BUILD: true
-    ACTIVE_LOCAL_BUILD: 0x8A
-    OVERHEAT_STATE: 0x8B
-    PACKET_TIMEOUT: 0x8C
+    ACTIVE_LOCAL_BUILD: true
+    OVERHEAT_STATE: true
+    PACKET_TIMEOUT: true
+    GET_VERSION:
+      parameters:
+        [{HOST_VERSION: "UInt16LE"}]
+      responseParameters:
+        [{FIRMWARE_VERSION: "UInt16LE"}]
+    GET_TOOLHEAD_TEMP:
+      responseParameters:
+        [{CURRENT_TEMP: "Int16LE"}]
+    GET_MOTOR_1_SPEED_RPM:
+      responseParameters:
+        [{ROTATION_DURATION: "UInt32LE"}]
+    IS_TOOL_READY:
+      responseParameters:
+        [{IS_TOOL_READY: "UInt8"}]
+    READ_FROM_EEPROM:
+      parameters:
+        [{MEMORY_OFFEST: "UInt16LE"},
+         {LENGTH: "UInt8"}]
+      responseParameters:
+        [{EEPROM_DATA: "Bytes"}]
+    WRITE_TO_EEPROM:
+      parameters:
+         [{MEMORY_OFFEST: "UInt16LE"},
+          {LENGTH: "UInt8"},
+          {DATA: "Bytes"}]
+      responseParameters:
+        [{NUMBER_OF_BYTES: "UInt8"}]
+    GET_PLATFORM_TEMP:
+      responseParameters:
+        [{PLATFORM_TEMPERATURE: "Int16LE"}]
+    GET_TOOLHEAD_TARGET_TEMP:
+      responseParameters:
+        [{TOOLHEAD_TARGET_TEMPERATURE: "Int16LE"}]
+    GET_PLATFORM_TARGET_TEMP:
+      responseParameters:
+        [{PLATFORM_TARGET_TEMPERATURE: "Int16LE"}]
+    IS_PLATFORM_READY:
+      responseParameters:
+        [{IS_PLATFORM_READY: "UInt8"}]
+    GET_TOOL_STATUS:
+      responseParameters:
+        [{TOOL_STATUS_BITFIELD: "UInt8"}]
+    GET_PID_STATE:
+      responseParameters:
+        [ {EXTRUDER_HEATER_ERROR: "Int16LE"},
+          {EXTRUDER_HEATER_DELTAL: "Int16LE"},
+          {EXTRUDER_HEATER_LAST: "Int16LE"},
+          {EXTRUDER_HEATER_ERROR: "Int16LE"},
+          {EXTRUDER_HEATER_DELTAL: "Int16LE"},
+          {EXTRUDER_HEATER_LAST: "Int16LE"}]
+    SET_TOOLHEAD_TARGET_TEMP:
+      parameters:
+        [{TARGET_TEMPERATURE: "Int16LE"}]
+    SET_MOTOR_1_SPEED_RPM:
+      parameters:
+        [ {ROTATION_DURATION: "UInt32LE"} ]
+    TOGGLE_MOTOR_1:
+      parameters:
+        [{BITFIELD: "UInt8"}]
+    TOGGLE_FAN:
+      parameters:
+        [{FAN_STATUS: "UInt8"}]
+    TOGGLE_EXTRA_OUTPUT:
+      parameters:
+        [{EXTRA_OUTPUT: "UInt8"}]
+    SET_SERVO_1_POSITION:
+      parameters:
+        [{ANGLE:"UInt8"}]
+    PAUSE: true
+    ABORT: true
+    SET_PLATFORM_TEMP: 
+      parameters:
+        [{TEMPERATURE: "Int16LE"}]
+
+
+
+
+
+
+
+
