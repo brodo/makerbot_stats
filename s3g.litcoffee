@@ -29,6 +29,7 @@ about the packet which is currently being parsed. The `@callback` is called ever
         @buffer = null
         @positionInBuffer = 0
         @packetLength = 0
+        
 
 
 String parameters are directly saved as strings to the `@packet`
