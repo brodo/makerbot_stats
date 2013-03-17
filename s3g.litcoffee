@@ -15,7 +15,8 @@ Superclass of `S3GHostStateMachine` and `S3GToolStateMachine`.
 
 ### constructor
 The `@states` object contains most states as attrubutes. For more information on states,
-see [s3g_states.coffee](s3g_states.html). `@constants` is used to map form the byte values  (e.g. *\0xd5*) to the
+see [s3g_states.coffee](s3g_states.html). `@constants` is used to map form the byte values  
+(e.g. *\0xd5*) to the
 respoective names (e.g. *PACKET*). The `@packet` object contains the information
 about the packet which is currently being parsed. The `@callback` is called everytime a packet is
  ready and has the packet object as it's argument. 
@@ -111,6 +112,7 @@ The initial state of a host state machine is *WAITING*
         super(states, constants, callback)
         @state = "WAITING"
         @toolStateMachine = null
+        @responseParametersArray = []
 
 ### parse
 Takes a byte from the FIFO and returns nothing. Manages `@state` and and `@packet`.
@@ -122,7 +124,6 @@ Takes a byte from the FIFO and returns nothing. Manages `@state` and and `@packe
           if byte == @constants.byteNames.OTHER.PACKET
             @packet = {}
             @state = "LENGTH"
-            @response = null
             @packetLength = 0
             @parameterIndex = 0
           return
@@ -154,9 +155,11 @@ known.
             else
               @state = if @packetLength == 1 then "CHECKSUM" else "UNKNOWN_PARAMETERS"
             @responseParameters = @states[code]?.responseParameters
+            @responseParametersArray.push(@responseParameters)
           else
             @packet.RESPONSE = code
-            if @responseParameters?
+            if @responseParametersArray.length > 0
+              @responseParameters = @responseParametersArray[0]
               @state = "RESPONSE_PARAMETERS"
             else
               @state = if @packetLength == 1 then "CHECKSUM" else "UNKNOWN_PARAMETERS"
@@ -199,6 +202,7 @@ of a tool network packet. This means it contains the the command and the command
               (toolPacket) =>
                 @packet.TOOL_PACKET = toolPacket
                 @responseParameters = @toolStateMachine.responseParameters
+                @responseParametersArray.push(@responseParameters)
                 @state = "CHECKSUM"
               )
             @state = "TOOL_PARAMETER"
@@ -215,6 +219,7 @@ the command itself and also not the tool id.
                 #console.log(toolPacket)
                 @packet.TOOL_PACKET = toolPacket
                 @responseParameters = @toolStateMachine.responseParameters
+                @responseParametersArray.push(@responseParameters)
                 @state = "CHECKSUM"
             )
             @toolStateMachine.parse(@packet.TOOL_ID)
@@ -230,6 +235,7 @@ the command itself and also not the tool id.
           if @state == "RESPONSE_PARAMETERS" and @parameterIndex == @responseParameters.length
             @state = "CHECKSUM"
             @responseParameters = null
+            @responseParametersArray.shift()
             return
 
 In case there are no parameters specified in `@states` but there are parameters nevertheless,
