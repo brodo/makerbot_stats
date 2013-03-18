@@ -60,7 +60,7 @@ module.exports  =
           {Y_POSITION: "Int32LE"},
           {Z_POSITION: "Int32LE"},
           {A_POSITION: "Int32LE"},
-          {B_POSITIOM: "Int32LE"},
+          {B_POSITION: "Int32LE"},
           {ENDSTOP_STATUS: "UInt16LE"} ]
     EXTENDED_STOP:
       parameters:
@@ -128,7 +128,7 @@ module.exports  =
         {Y_POSITION: "Int32LE"},
         {Z_POSITION: "Int32LE"},
         {A_POSITION: "Int32LE"},
-        {B_POSITIOM: "Int32LE"},
+        {B_POSITION: "Int32LE"},
         {FEED_RATE: "UInt32LE"}]
     SET_EXTENDED_POSITION:
       parameters:
@@ -136,7 +136,7 @@ module.exports  =
           {Y_POSITION: "Int32LE"},
           {Z_POSITION: "Int32LE"},
           {A_POSITION: "Int32LE"},
-          {B_POSITIOM: "Int32LE"} ]
+          {B_POSITION: "Int32LE"} ]
     WAIT_FOR_PLATFORM_READY:
       parameters:
         [ {TOOL_ID: "UInt8"},
@@ -148,7 +148,7 @@ module.exports  =
           {Y_POSITION: "Int32LE"},
           {Z_POSITION: "Int32LE"},
           {A_POSITION: "Int32LE"},
-          {B_POSITIOM: "Int32LE"},
+          {B_POSITION: "Int32LE"},
           {MOVEMENT_DURATION: "UInt32LE"},
           {BITFIELD: "UInt8"} ]
     STORE_HOME_POSITIONS:
@@ -209,9 +209,11 @@ module.exports  =
           {Y_POSITION: "Int32LE"},
           {Z_POSITION: "Int32LE"},
           {A_POSITION: "Int32LE"},
-          {B_POSITIOM: "Int32LE"},
-          {DDA_FEEDRATE: "UInt32LE"},
-          {AXES_BITFIELD: "UInt8"} ]
+          {B_POSITION: "Int32LE"},
+          {DDA_FEEDRATE_IN_STEPS: "UInt32LE"},
+          {AXES_BITFIELD: "UInt8"},
+          {DISTANCE: "FloatLE"},
+          {FEEDRATE_TIMES_64: "UInt16LE"} ]
     X3G_VERSION:
       parameters:
         [ {X3G_HIGH: "UInt8"},

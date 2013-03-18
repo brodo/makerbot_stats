@@ -31,7 +31,9 @@ about the packet which is currently being parsed. The `@callback` is called ever
         @positionInBuffer = 0
         @packetLength = 0
         @responseByteLengthArray = []
-        @inSync = false
+        @waitCount = 0
+        
+
         
 
 
@@ -47,9 +49,11 @@ String parameters are directly saved as strings to the `@packet`
 If the parameter is a byte array then it added appended to the `@packet` as a base64 encoded string. 
 
       handleByteParameter: (parameterType, parameterName, byte) ->
-        parameterSize = if @packet.LENGTH? then @packet.LENGTH else @responseByteLengthArray.shift()
+        parameterSize = if @packet.Length? then @packet.Length else @responseByteLengthArray.shift()
         if parameterSize == 0
           @parameterIndex += 1
+          @positionInBuffer = 0
+          @packet[parameterName] = "!!EMPTY!!"
         if @positionInBuffer == 0 then @buffer = new Buffer(parameterSize)
         @buffer[@positionInBuffer] = byte
         @positionInBuffer += 1
@@ -125,11 +129,15 @@ Takes a byte from the FIFO and returns nothing. Manages `@state` and and `@packe
 
       parse: (byte) ->
         if @state == "WAITING"
+          @waitCount += 1
           if byte == @constants.byteNames.OTHER.PACKET
             @packet = {}
             @state = "LENGTH"
             @packetLength = 0
             @parameterIndex = 0
+            @waitCount = 0
+          if @waitCount > 1
+            console.log("HANGING AT BYTE #{byte}")
           return
 
 This is the **second** byte in the packet.
@@ -141,7 +149,7 @@ This is the **second** byte in the packet.
 
 This is the **third** byte in the packet. It might be a host command or a response code from the
 printer. If it is a host command we save the types of it's parameters and the types of the
-parameters the response will have. If the `@packet.LENGTH` is not 1 and there are no parameters
+parameters the response will have. If the `@packetLength` is not 1 and there are no parameters
 saved for the command or response in `@states` that means that there are paremeters which are not
 known.
 
@@ -151,7 +159,6 @@ known.
             @state = "UNKNOWN_PARAMETERS"
             return
           if @constants.isHostCommand(code)
-            if code == "INIT" then @inSync = true
             @requestParameters = null
             @packet.COMMAND = code
             if @states[code].parameters?
@@ -239,8 +246,8 @@ the command itself and also not the tool id.
             if @responseParameters?
               responseValues = (param[key] for key of param for param in @responseParameters)
               flatValues = [].concat.apply([], responseValues)
-              if 'Bytes' in flatValues and @packet.LENGTH?
-                @responseByteLengthArray.push(@packet.LENGTH)
+              if 'Bytes' in flatValues and @packetLength?
+                @responseByteLengthArray.push(@packetLength)
                 
             @requestParameters = null
           if @state == "RESPONSE_PARAMETERS" and @parameterIndex == @responseParameters.length
@@ -256,7 +263,7 @@ the `PAYLOAD` attribute is added to `@packet` with the base64 encoded payload.
           @handleUnknownParameter(byte)
           @responseParametersArray = []
           @responseByteLengthArray = []
-          if @positionInBuffer == @packetLength
+          if @positionInBuffer == @packetLength 
             @state = "CHECKSUM"
             @positionInBuffer = 0
             @parameterIndex = 0
@@ -269,8 +276,13 @@ Now we are at the **last** byte in the packet. The checksum is ignored - we can'
 about broken packages anyway.
 
         if @state == "CHECKSUM"
+          if not @packetLength?
+            console.log("NO LENGTH")
+          
           @callback(@packet) if @packet?
           @state = "WAITING"
+       
+
           return
 
 
