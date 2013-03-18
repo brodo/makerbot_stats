@@ -118,6 +118,12 @@ addAttributesToObject = (fromObject, toObject) ->
   toObject[key] = fromObject[key] for key in Object.keys(fromObject)
   return toObject
 
+sizeForType = (type) ->
+  if type == 'String' or type == 'Byte'
+    return 0
+  else
+    numberTypes[type].size
+
 
 
 nameForHostByte = (byte) ->
@@ -139,6 +145,7 @@ isHostCommand = (command) ->
 
 module.exports.byteNames = byteNames
 module.exports.numberTypes = numberTypes
+module.exports.sizeForType = sizeForType
 module.exports.nameForToolByte = nameForToolByte
 module.exports.nameForHostByte = nameForHostByte
 module.exports.isHostCommand = isHostCommand

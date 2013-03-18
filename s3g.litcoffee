@@ -32,9 +32,22 @@ about the packet which is currently being parsed. The `@callback` is called ever
         @packetLength = 0
         @responseByteLengthArray = []
         @waitCount = 0
-        
+        @packetPosition = 0
 
-        
+      generateTypeArray: (parameters) ->
+        types = (param[key] for key of param for param in parameters)
+        types = [].concat.apply([],types)
+        return types
+
+      calculateResponseSize: (parameters) ->
+        types = @generateTypeArray(parameters)
+        return (@constants.sizeForType(type) for type in types).reduce((x,y) -> x+y)
+
+      containsVariableSizedArguments: (parameters) ->
+        types = @generateTypeArray(parameters)
+        return 'String' in types or 'Bytes' in types
+
+
 
 
 String parameters are directly saved as strings to the `@packet`
@@ -136,6 +149,7 @@ Takes a byte from the FIFO and returns nothing. Manages `@state` and and `@packe
             @packetLength = 0
             @parameterIndex = 0
             @waitCount = 0
+            @packetPosition = 0
           if @waitCount > 1
             console.log("HANGING AT BYTE #{byte}")
           return
@@ -154,11 +168,16 @@ saved for the command or response in `@states` that means that there are paremet
 known.
 
         if @state == "COMMAND_OR_RESPONSE_BYTE"
+          @packetPosition += 1
           code = @constants.nameForHostByte(byte)
           if not code?
             @state = "UNKNOWN_PARAMETERS"
             return
+
+Current packet is host command.
+
           if @constants.isHostCommand(code)
+            console.log("HOST Command")
             @requestParameters = null
             @packet.COMMAND = code
             if @states[code].parameters?
@@ -166,16 +185,32 @@ known.
               @state = "REQUEST_PARAMETERS"
             else
               @state = if @packetLength == 1 then "CHECKSUM" else "UNKNOWN_PARAMETERS"
-            @responseParameters = @states[code]?.responseParameters
-            if @responseParameters?
-              @responseParametersArray.push(@responseParameters)
+            params = @states[code].responseParameters
+            if params?
+              @responseParametersArray.push(params)
+
+Current packet is tool reply.
+
           else
+            console.log("REPLY Command")
             @packet.RESPONSE = code
-            if @responseParametersArray.length > 0
-              @responseParameters = @responseParametersArray[0]
+            @responseParameters = null
+            index = 0
+            for parameters, i in @responseByteLengthArray
+              if @packetLength == @calculateResponseSize(parameters)
+                @responseParameters = parameters
+                index = i
+                break
+              if @packetLength > @calculateResponseSize(parameters) and
+                @containsVariableSizedArguments(parameters)
+                  @responseParameters = parameters
+                  index = i
+                  break
+            if @responseParameters?
+              @responseByteLengthArray = @responseByteLengthArray[index+1..]
               @state = "RESPONSE_PARAMETERS"
             else
-              @state = if @packetLength == 1 then "CHECKSUM" else "UNKNOWN_PARAMETERS"
+              @state = "UNKNOWN_PARAMETERS" 
           return
 
 The next bytes are the **forth and all following** bytes in the packet until the checksum. (aka 
@@ -188,13 +223,15 @@ There are four three of parameters:
 1. Integers (including bit fields)
 2. Strings
 3. Byte Arrays
-4. Tool Querys
+4. Tool Queries
 
 The sizes of the integers are taken from `numberTypes`. The size of the strings is determinded
 by the occurence of the first null byte. The size of byte arrays is read from the `LENGTH`
 parameter. *Every parameter which specifies the length of a byte array must be called `LENGTH`.*
 
         if @state == "REQUEST_PARAMETERS" or @state == "RESPONSE_PARAMETERS"
+          console.log(@state)
+          @packetPosition += 1
           if @state == "REQUEST_PARAMETERS"
             parameterInfos = @requestParameters?[@parameterIndex] 
           if @state == "RESPONSE_PARAMETERS"
@@ -253,13 +290,13 @@ the command itself and also not the tool id.
           if @state == "RESPONSE_PARAMETERS" and @parameterIndex == @responseParameters.length
             @state = "CHECKSUM"
             @responseParameters = null
-            @responseParametersArray.shift()
             return
 
 In case there are no parameters specified in `@states` but there are parameters nevertheless,
 the `PAYLOAD` attribute is added to `@packet` with the base64 encoded payload. 
 
         if @state == "UNKNOWN_PARAMETERS"
+          @packetPosition += 1
           @handleUnknownParameter(byte)
           @responseParametersArray = []
           @responseByteLengthArray = []
@@ -269,6 +306,7 @@ the `PAYLOAD` attribute is added to `@packet` with the base64 encoded payload.
             @parameterIndex = 0
           return
         if @state == "TOOL_PARAMETER"
+          @packetPosition += 1
           @toolStateMachine.parse(byte)
           return
 
@@ -276,13 +314,10 @@ Now we are at the **last** byte in the packet. The checksum is ignored - we can'
 about broken packages anyway.
 
         if @state == "CHECKSUM"
-          if not @packetLength?
-            console.log("NO LENGTH")
-          
           @callback(@packet) if @packet?
           @state = "WAITING"
-       
-
+          if @packetPosition < @packetLength
+            console.log("IN PACKET")
           return
 
 
@@ -349,7 +384,7 @@ the packages. Great for debugging!
 
         s3ghsm = new S3GHostStateMachine(states, constants,
           (packet) -> 
-           console.log(packet)
+            #console.log(packet)
         )
 
         fs = require('fs')

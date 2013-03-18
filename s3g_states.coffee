@@ -33,7 +33,7 @@ module.exports  =
         [ {DATA: "Bytes"} ]
     CAPTURE_TO_FILE: 
       parameters:
-        [ {FILE_NAME: "string"} ]
+        [ {FILE_NAME: "String"} ]
       responseParameters:
         [ {SD_RESPONSE_CODE: "UInt8"} ]
     END_CAPTURE:
