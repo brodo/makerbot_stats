@@ -30,6 +30,8 @@ about the packet which is currently being parsed. The `@callback` is called ever
         @buffer = null
         @positionInBuffer = 0
         @packetLength = 0
+        @responseByteLengthArray = []
+        @inSync = false
         
 
 
@@ -45,7 +47,9 @@ String parameters are directly saved as strings to the `@packet`
 If the parameter is a byte array then it added appended to the `@packet` as a base64 encoded string. 
 
       handleByteParameter: (parameterType, parameterName, byte) ->
-        parameterSize = @packet.LENGTH
+        parameterSize = if @packet.LENGTH? then @packet.LENGTH else @responseByteLengthArray.shift()
+        if parameterSize == 0
+          @parameterIndex += 1
         if @positionInBuffer == 0 then @buffer = new Buffer(parameterSize)
         @buffer[@positionInBuffer] = byte
         @positionInBuffer += 1
@@ -147,6 +151,7 @@ known.
             @state = "UNKNOWN_PARAMETERS"
             return
           if @constants.isHostCommand(code)
+            if code == "INIT" then @inSync = true
             @requestParameters = null
             @packet.COMMAND = code
             if @states[code].parameters?
@@ -155,7 +160,8 @@ known.
             else
               @state = if @packetLength == 1 then "CHECKSUM" else "UNKNOWN_PARAMETERS"
             @responseParameters = @states[code]?.responseParameters
-            @responseParametersArray.push(@responseParameters)
+            if @responseParameters?
+              @responseParametersArray.push(@responseParameters)
           else
             @packet.RESPONSE = code
             if @responseParametersArray.length > 0
@@ -216,7 +222,6 @@ the command itself and also not the tool id.
           else if parameterType == "ToolPayload"
             @toolStateMachine = new S3GToolStateMachine(@states, @constants,
               (toolPacket) =>
-                #console.log(toolPacket)
                 @packet.TOOL_PACKET = toolPacket
                 @responseParameters = @toolStateMachine.responseParameters
                 @responseParametersArray.push(@responseParameters)
@@ -231,6 +236,12 @@ the command itself and also not the tool id.
 
           if @state == "REQUEST_PARAMETERS" and @parameterIndex == @requestParameters.length
             @state = "CHECKSUM"
+            if @responseParameters?
+              responseValues = (param[key] for key of param for param in @responseParameters)
+              flatValues = [].concat.apply([], responseValues)
+              if 'Bytes' in flatValues and @packet.LENGTH?
+                @responseByteLengthArray.push(@packet.LENGTH)
+                
             @requestParameters = null
           if @state == "RESPONSE_PARAMETERS" and @parameterIndex == @responseParameters.length
             @state = "CHECKSUM"
@@ -243,6 +254,8 @@ the `PAYLOAD` attribute is added to `@packet` with the base64 encoded payload.
 
         if @state == "UNKNOWN_PARAMETERS"
           @handleUnknownParameter(byte)
+          @responseParametersArray = []
+          @responseByteLengthArray = []
           if @positionInBuffer == @packetLength
             @state = "CHECKSUM"
             @positionInBuffer = 0
