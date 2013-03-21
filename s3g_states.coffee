@@ -1,315 +1,302 @@
 module.exports  =
-    GET_VERSION:
+    GetVersion:
       parameters:
-        [ {HOST_VERSION: "UInt16LE"} ]
+        [ {HostVersion: "UInt16LE"} ]
       responseParameters:
-        [ {FIRMWARE_VERSION: "UInt16LE"} ]              
-    INIT: true # No argument or response
-    GET_AVAILABLE_BUFFER_SIZE:
+        [ {FirmwareVersion: "UInt16LE"} ]              
+    Init: true # No argument or response
+    GetAvailableBufferSize:
       responseParameters:
-        [ {BUFFER_SIZE: "UInt32LE"} ]
-    CLEAR_BUFFER: true # No argument or response
-    ABORT_IMMEDIATELY: true # No argument or response
-    PAUSE: true # No argument or response
-    TOOL_QUERY:  
+        [ {BufferSize: "UInt32LE"} ]
+    ClearBuffer: true # No argument or response
+    AbortImmediately: true # No argument or response
+    Pause: true # No argument or response
+    ToolQuery:  
       parameters:
-        [ {TOOL_INDEX: "UInt8"},
-          {PAYLOAD: "ToolQuery"}]
-    IS_FINISHED:
+        [ {ToolIndex: "UInt8"},
+          {Payload: "ToolQuery"}]
+    IsFinished:
       responseParameters:
-        [ {IS_FINISHED: "UInt8"} ]
-    READ_FROM_EEPROM:
+        [ {IsFinished: "UInt8"} ]
+    ReadFromEeprom:
       parameters:
-        [ {MEMORY_OFFEST: "UInt16LE"},
-          {LENGTH: "UInt8"} ]
+        [ {MemoryOffest: "UInt16LE"},
+          {Length: "UInt8"} ]
       responseParameters:
-        [ {DATA: "Bytes"} ]
-    WRITE_TO_EEPROM:
+        [ {Data: "Bytes"} ]
+    WriteToEeprom:
       parameters:
-        [ {MEMORY_OFFEST: "UInt16LE"},
-          {NUMBER_OF_BYTES: "UInt8"},
-          {DATA: "Bytes"} ]
+        [ {MemoryOffest: "UInt16LE"},
+          {Length: "UInt8"},
+          {Data: "Bytes"} ]
       responseParameters:
-        [ {DATA: "Bytes"} ]
-    CAPTURE_TO_FILE: 
+        [ {Data: "Bytes"} ]
+    CaptureToFile: 
       parameters:
-        [ {FILE_NAME: "String"} ]
+        [ {FileName: "String"} ]
       responseParameters:
-        [ {SD_RESPONSE_CODE: "UInt8"} ]
-    END_CAPTURE:
+        [ {SdResponseCode: "UInt8"} ]
+    EndCapture:
       responseParameters:
-        [ {BYTECOUNT: "UInt32LE"} ]
-    PLAYBACK_CAPTURE: 
+        [ {Bytecount: "UInt32LE"} ]
+    PlaybackCapture: 
       parameters:
-        [ {FILE_NAME: "String"} ]
+        [ {FileName: "String"} ]
       responseParameters:
-        [ {SD_RESPONSE_CODE: "UInt8"} ]
-    RESET: true # No argument or response
-    GET_NEXT_FILENAME: 
+        [ {SdResponseCode: "UInt8"} ]
+    Reset: true # No argument or response
+    GetNextFilename: 
       parameters:
-        [ {RESTART_LISTING: "UInt8"} ]
+        [ {RestartListing: "UInt8"} ]
       responseParameters:
-        [ {SD_RESPONSE_CODE: "UInt8"},
-          {NAME: "String"}]
-    GET_BUILD_NAME:
+        [ {SdResponseCode: "UInt8"},
+          {Name: "String"}]
+    GetBuildName:
       responseParameters:
-        {NAME: "String"}
-    GET_EXTENDED_POSITION:
+        {Name: "String"}
+    GetExtendedPosition:
       responseParameters:
-        [ {X_POSITION: "Int32LE"},
-          {Y_POSITION: "Int32LE"},
-          {Z_POSITION: "Int32LE"},
-          {A_POSITION: "Int32LE"},
-          {B_POSITION: "Int32LE"},
-          {ENDSTOP_STATUS: "UInt16LE"} ]
-    EXTENDED_STOP:
+        [ {XPosition: "Int32LE"},
+          {YPosition: "Int32LE"},
+          {ZPosition: "Int32LE"},
+          {APosition: "Int32LE"},
+          {BPosition: "Int32LE"},
+          {EndstopStatus: "UInt16LE"} ]
+    ExtendedStop:
       parameters:
-        [ {BITFIELD: "UInt8"} ]
+        [ {Bitfield: "UInt8"} ]
       responseParameters:
-        [ {RESERVED: "UInt8"} ]
-    GET_MOTHERBOARD_STATUS:
+        [ {Reserved: "UInt8"} ]
+    GetMotherboardStatus:
       responseParameters:
-        [ {BITFIELD: "UInt8"} ]
-    GET_BUILD_STATS:
+        [ {Bitfield: "UInt8"} ]
+    GetBuildStats:
       responseParameters:
-        [ {BUILD_STATE: "UInt8"},
-          {HOURS_ELAPSED: "UInt8"},
-          {MINUTES_ELAPSED: "UInt8"},
-          {LINE_NUMBER: "UInt32LE"},
-          {RESERVED: "UInt32LE"} ]
-    GET_COMMUNICATION_STATS:
+        [ {BuildState: "UInt8"},
+          {HoursElapsed: "UInt8"},
+          {MinutesElapsed: "UInt8"},
+          {LineNumber: "UInt32LE"},
+          {Reserved: "UInt32LE"} ]
+    GetCommunicationStats:
       responseParameters:
-        [ {PACKETS_RECEIVED: "UInt32LE"},
-          {PACKETS_SENT: "UInt32LE"},
-          {UNRESPONDED_PACKETS: "UInt32LE"},
-          {RETRIES: "UInt32LE"},
-          {PACKETS_RECEIVED: "UInt32LE"}]
-    GET_ADVANCED_VERSION:
+        [ {PacketsReceived: "UInt32LE"},
+          {PacketsSent: "UInt32LE"},
+          {UnrespondedPackets: "UInt32LE"},
+          {Retries: "UInt32LE"},
+          {PacketsReceived: "UInt32LE"}]
+    GetAdvancedVersion:
       parameters:
-        [ {HOST_VERSION: "UInt16LE"} ]
+        [ {HostVersion: "UInt16LE"} ]
       responseParameters:
-        [ {FIRMWARE_VERSION: "UInt16LE"},
-          {INTERNAL_VERSION: "UInt16LE"},
-          {VARIANT: "UInt8"},
-          {RESERVED1: "UInt8"},
-          {RESERVED2: "UInt16LE"} ]
-    FIND_AXES_MINIMUMS:
+        [ {FirmwareVersion: "UInt16LE"},
+          {InternalVersion: "UInt16LE"},
+          {Variant: "UInt8"},
+          {Reserved1: "UInt8"},
+          {Reserved2: "UInt16LE"} ]
+    FindAxesMinimums:
       parameters:
-        [ {AXES: "UInt8"},
-          {FEED_RATE: "UInt32LE"},
-          {TIMEOUT: "UInt16LE"} ]
-    FIND_AXES_MAXIMUMS:
+        [ {Axes: "UInt8"},
+          {FeedRate: "UInt32LE"},
+          {Timeout: "UInt16LE"} ]
+    FindAxesMaximums:
       parameters:
-        [ {AXES: "UInt8"},
-          {FEED_RATE: "UInt32LE"},
-          {TIMEOUT: "UInt16LE"}]
-    DELAY:
+        [ {Axes: "UInt8"},
+          {FeedRate: "UInt32LE"},
+          {Timeout: "UInt16LE"}]
+    Delay:
       parameters:
-        [ {DELAY: "UInt32LE"} ]
-    CHANGE_TOOL:
+        [ {Delay: "UInt32LE"} ]
+    ChangeTool:
       parameters:
-        [ {TOOL_ID: "UInt8"} ]
-    WAIT_FOR_TOOL_READY:
+        [ {ToolId: "UInt8"} ]
+    WaitForToolReady:
       parameters:
-        [ {TOOL_ID: "UInt8"},
-          {DELAY: "UInt16LE"},
-          {TIMEOUT: "UInt16LE"}]
-    TOOL_ACTION_COMMAND:
+        [ {ToolId: "UInt8"},
+          {Delay: "UInt16LE"},
+          {Timeout: "UInt16LE"}]
+    ToolActionCommand:
       parameters:
-        [ {TOOL_ID: "UInt8"},
-          {ACTION_COMMAND: "UInt8"},
-          {LENGTH: "UInt8"},
-          {TOOL_COMMAND: "ToolPayload"}]
-    ENABLE_AXES:
+        [ {ToolId: "UInt8"},
+          {ActionCommand: "UInt8"},
+          {Length: "UInt8"},
+          {ToolCommand: "ToolArguments"}]
+    EnableAxes:
       parameters:
-        [ {BITFIELD: "UInt8"} ]
-    QUEUE_EXTENDED_POINT:
-      [ {X_POSITION: "Int32LE"},
-        {Y_POSITION: "Int32LE"},
-        {Z_POSITION: "Int32LE"},
-        {A_POSITION: "Int32LE"},
-        {B_POSITION: "Int32LE"},
-        {FEED_RATE: "UInt32LE"}]
-    SET_EXTENDED_POSITION:
+        [ {Bitfield: "UInt8"} ]
+    QueueExtendedPoint:
+      [ {XPosition: "Int32LE"},
+        {YPosition: "Int32LE"},
+        {ZPosition: "Int32LE"},
+        {APosition: "Int32LE"},
+        {BPosition: "Int32LE"},
+        {FeedRate: "UInt32LE"}]
+    SetExtendedPosition:
       parameters:
-        [ {X_POSITION: "Int32LE"},
-          {Y_POSITION: "Int32LE"},
-          {Z_POSITION: "Int32LE"},
-          {A_POSITION: "Int32LE"},
-          {B_POSITION: "Int32LE"} ]
-    WAIT_FOR_PLATFORM_READY:
+        [ {XPosition: "Int32LE"},
+          {YPosition: "Int32LE"},
+          {ZPosition: "Int32LE"},
+          {APosition: "Int32LE"},
+          {BPosition: "Int32LE"} ]
+    WaitForPlatformReady:
       parameters:
-        [ {TOOL_ID: "UInt8"},
-          {DELEY: "UInt16LE"},
-          {TIMEOUT: "UInt16LE"} ]
-    QUEUE_EXTENDED_POINT_NEW:
+        [ {ToolId: "UInt8"},
+          {Deley: "UInt16LE"},
+          {Timeout: "UInt16LE"} ]
+    QueueExtendedPointNew:
       parameters:
-        [ {X_POSITION: "Int32LE"},
-          {Y_POSITION: "Int32LE"},
-          {Z_POSITION: "Int32LE"},
-          {A_POSITION: "Int32LE"},
-          {B_POSITION: "Int32LE"},
-          {MOVEMENT_DURATION: "UInt32LE"},
-          {BITFIELD: "UInt8"} ]
-    STORE_HOME_POSITIONS:
+        [ {XPosition: "Int32LE"},
+          {YPosition: "Int32LE"},
+          {ZPosition: "Int32LE"},
+          {APosition: "Int32LE"},
+          {BPosition: "Int32LE"},
+          {MovementDuration: "UInt32LE"},
+          {Bitfield: "UInt8"} ]
+    StoreHomePositions:
       parameters:
-        [ {BITFIELD: "UInt8"} ]
-    RECALL_HOME_POSITIONS:
+        [ {Bitfield: "UInt8"} ]
+    RecallHomePositions:
       parameters:
-        [ {BITFIELD: "UInt8"} ]
-    SET_POT_VALUE:
+        [ {Bitfield: "UInt8"} ]
+    SetPotValue:
       parameters:
-        [ {AXIS_VALUE: "UInt8"},
-          {VALUE: "UInt8"} ]
-    SET_RGB_LED:
+        [ {AxisValue: "UInt8"},
+          {Value: "UInt8"} ]
+    SetRgbLed:
       parameters:
-        [ {RED: "UInt8"},
-          {GREEN: "UInt8"},
-          {BLUE: "UInt8"},
-          {BLINK_RATE: "UInt8"},
-          {RESERVED: "UInt8"} ]
-    SET_BEEP:
+        [ {Red: "UInt8"},
+          {Green: "UInt8"},
+          {Blue: "UInt8"},
+          {BlinkRate: "UInt8"},
+          {Reserved: "UInt8"} ]
+    SetBeep:
       parameters:
-        [ {FREQUENCY: "UInt16LE"},
-          {BUZZ_LENGTH: "UInt16LE"},
-          {RESERVED: "UInt8"} ]
-    WAIT_FOR_BUTTON:
+        [ {Frequency: "UInt16LE"},
+          {BuzzLength: "UInt16LE"},
+          {Reserved: "UInt8"} ]
+    WaitForButton:
       parameters:
-        [ {BUTTON_BITFIELD: "UInt8"},
-          {TIMEOUT: "UInt16LE"},
-          {OPTIONS_BITFIELD: "UInt8"} ]
-    DISPLAY_MESSAGE:
+        [ {ButtonBitfield: "UInt8"},
+          {Timeout: "UInt16LE"},
+          {OptionsBitfield: "UInt8"} ]
+    DisplayMessage:
       parameters:
-        [ {OPTIONS_BITFIELD: "UInt8"},
-          {HORIZONTAL_POSITION: "UInt8"},
-          {VERTICAL_POSITION: "UInt8"},
-          {TIMEOUT: "UInt8"},
-          {MESSAGE: "String"} ]
-    SET_BUILD_PERCENT:
+        [ {OptionsBitfield: "UInt8"},
+          {HorizontalPosition: "UInt8"},
+          {VerticalPosition: "UInt8"},
+          {Timeout: "UInt8"},
+          {Message: "String"} ]
+    SetBuildPercent:
       parameters:
-        [ {PERCENT: "UInt8"},
-          {RESERVED: "UInt8"} ]
-    QUEUE_SONG:
+        [ {Percent: "UInt8"},
+          {Reserved: "UInt8"} ]
+    QueueSong:
       parameters:
-        [ {SONG_ID: "UInt8"} ]
-    RESET_TO_FACTORY:
+        [ {SongId: "UInt8"} ]
+    ResetToFactory:
       parameters:
-        [ {RESERVED: "UInt8"} ]
-    BUILD_START_NOTIFICATION:
+        [ {Reserved: "UInt8"} ]
+    BuildStartNotification:
       parameters:
-        [ {RESERVED: "UInt32LE"},
-          {BUILD_NAME: "String"} ]
-    BUILD_END_NOTIFICATION:
+        [ {Reserved: "UInt32LE"},
+          {BuildName: "String"} ]
+    BuildEndNotification:
       parameters:
         parameters:
-         [ {RESERVED: "UInt8"} ]
-    QUEUE_EXTENDED_POINT_ACCELERATED:
+         [ {Reserved: "UInt8"} ]
+    QueueExtendedPointAccelerated:
       parameters:
-        [ {X_POSITION: "Int32LE"},
-          {Y_POSITION: "Int32LE"},
-          {Z_POSITION: "Int32LE"},
-          {A_POSITION: "Int32LE"},
-          {B_POSITION: "Int32LE"},
-          {DDA_FEEDRATE_IN_STEPS: "UInt32LE"},
-          {AXES_BITFIELD: "UInt8"},
-          {DISTANCE: "FloatLE"},
-          {FEEDRATE_TIMES_64: "UInt16LE"} ]
-    X3G_VERSION:
+        [ {XPosition: "Int32LE"},
+          {YPosition: "Int32LE"},
+          {ZPosition: "Int32LE"},
+          {APosition: "Int32LE"},
+          {BPosition: "Int32LE"},
+          {DdaFeedrateInSteps: "UInt32LE"},
+          {AxesBitfield: "UInt8"},
+          {Distance: "FloatLE"},
+          {FeedrateTimes64: "UInt16LE"} ]
+    X3GVersion:
       parameters:
-        [ {X3G_HIGH: "UInt8"},
-          {X3G_LOW: "UInt8"},
-          {RESERVED: "UInt8"},
-          {RESERVED2: "UInt32LE"},
-          {BOT_TYPE: "UInt16LE"},
-          {RESERVED3: "UInt16LE"},
-          {RESERVED4: "UInt32LE"},
-          {RESERVED5: "UInt32LE"},
-          {RESERVED6: "UInt8"} ]
-    GENERIC_PACKET_ERROR: true
-    SUCCESS: true
-    ACTION_BUFFER_OVERFLOW: true
-    CRC_MISMATCH: true
-    PACKET_TOO_BIG: true
-    COMMAND_NOT_SUPPORTED: true
-    DOWNSTREAM_TIMEOUT: true
-    TOOL_LOCK_TIMEOUT: true
-    CANCEL_BUILD: true
-    ACTIVE_LOCAL_BUILD: true
-    OVERHEAT_STATE: true
-    PACKET_TIMEOUT: true
-    GET_VERSION:
+        [ {X3GHigh: "UInt8"},
+          {X3GLow: "UInt8"},
+          {Reserved: "UInt8"},
+          {Reserved2: "UInt32LE"},
+          {BotType: "UInt16LE"},
+          {Reserved3: "UInt16LE"},
+          {Reserved4: "UInt32LE"},
+          {Reserved5: "UInt32LE"},
+          {Reserved6: "UInt8"} ]
+    GenericPacketError: true
+    Success: true
+    ActionBufferOverflow: true
+    CrcMismatch: true
+    PacketTooBig: true
+    CommandNotSupported: true
+    DownstreamTimeout: true
+    ToolLockTimeout: true
+    CancelBuild: true
+    ActiveLocalBuild: true
+    OverheatState: true
+    PacketTimeout: true
+    GetVersion:
       parameters:
-        [{HOST_VERSION: "UInt16LE"}]
+        [{HostVersion: "UInt16LE"}]
       responseParameters:
-        [{FIRMWARE_VERSION: "UInt16LE"}]
-    GET_TOOLHEAD_TEMP:
+        [{FirmwareVersion: "UInt16LE"}]
+    GetToolheadTemp:
       responseParameters:
-        [{CURRENT_TEMP: "Int16LE"}]
-    GET_MOTOR_1_SPEED_RPM:
+        [{CurrentTemp: "Int16LE"}]
+    GetMotor1SpeedRpm:
       responseParameters:
-        [{ROTATION_DURATION: "UInt32LE"}]
-    IS_TOOL_READY:
+        [{RotationDuration: "UInt32LE"}]
+    IsToolReady:
       responseParameters:
-        [{IS_TOOL_READY: "UInt8"}]
-    READ_FROM_EEPROM:
+        [{IsToolReady: "UInt8"}]
+    GetPlatformTemp:
+      responseParameters:
+        [{PlatformTemperature: "Int16LE"}]
+    GetToolheadTargetTemp:
+      responseParameters:
+        [{ToolheadTargetTemperature: "Int16LE"}]
+    GetPlatformTargetTemp:
+      responseParameters:
+        [{PlatformTargetTemperature: "Int16LE"}]
+    IsPlatformReady:
+      responseParameters:
+        [{IsPlatformReady: "UInt8"}]
+    GetToolStatus:
+      responseParameters:
+        [{ToolStatusBitfield: "UInt8"}]
+    GetPidState:
+      responseParameters:
+        [ {ExtruderHeaterError: "Int16LE"},
+          {ExtruderHeaterDeltal: "Int16LE"},
+          {ExtruderHeaterLast: "Int16LE"},
+          {ExtruderHeaterError: "Int16LE"},
+          {ExtruderHeaterDeltal: "Int16LE"},
+          {ExtruderHeaterLast: "Int16LE"}]
+    SetToolheadTargetTemp:
       parameters:
-        [{MEMORY_OFFEST: "UInt16LE"},
-         {LENGTH: "UInt8"}]
-      responseParameters:
-        [{EEPROM_DATA: "Bytes"}]
-    WRITE_TO_EEPROM:
+        [{TargetTemperature: "Int16LE"}]
+    SetMotor1SpeedRpm:
       parameters:
-         [{MEMORY_OFFEST: "UInt16LE"},
-          {LENGTH: "UInt8"},
-          {DATA: "Bytes"}]
-      responseParameters:
-        [{NUMBER_OF_BYTES: "UInt8"}]
-    GET_PLATFORM_TEMP:
-      responseParameters:
-        [{PLATFORM_TEMPERATURE: "Int16LE"}]
-    GET_TOOLHEAD_TARGET_TEMP:
-      responseParameters:
-        [{TOOLHEAD_TARGET_TEMPERATURE: "Int16LE"}]
-    GET_PLATFORM_TARGET_TEMP:
-      responseParameters:
-        [{PLATFORM_TARGET_TEMPERATURE: "Int16LE"}]
-    IS_PLATFORM_READY:
-      responseParameters:
-        [{IS_PLATFORM_READY: "UInt8"}]
-    GET_TOOL_STATUS:
-      responseParameters:
-        [{TOOL_STATUS_BITFIELD: "UInt8"}]
-    GET_PID_STATE:
-      responseParameters:
-        [ {EXTRUDER_HEATER_ERROR: "Int16LE"},
-          {EXTRUDER_HEATER_DELTAL: "Int16LE"},
-          {EXTRUDER_HEATER_LAST: "Int16LE"},
-          {EXTRUDER_HEATER_ERROR: "Int16LE"},
-          {EXTRUDER_HEATER_DELTAL: "Int16LE"},
-          {EXTRUDER_HEATER_LAST: "Int16LE"}]
-    SET_TOOLHEAD_TARGET_TEMP:
+        [ {RotationDuration: "UInt32LE"} ]
+    ToggleMotor1:
       parameters:
-        [{TARGET_TEMPERATURE: "Int16LE"}]
-    SET_MOTOR_1_SPEED_RPM:
+        [{Bitfield: "UInt8"}]
+    ToggleFan:
       parameters:
-        [ {ROTATION_DURATION: "UInt32LE"} ]
-    TOGGLE_MOTOR_1:
+        [{FanStatus: "UInt8"}]
+    ToggleExtraOutput:
       parameters:
-        [{BITFIELD: "UInt8"}]
-    TOGGLE_FAN:
+        [{ExtraOutput: "UInt8"}]
+    SetServo1Position:
       parameters:
-        [{FAN_STATUS: "UInt8"}]
-    TOGGLE_EXTRA_OUTPUT:
+        [{Angle:"UInt8"}]
+    Pause: true
+    Abort: true
+    SetPlatformTemp: 
       parameters:
-        [{EXTRA_OUTPUT: "UInt8"}]
-    SET_SERVO_1_POSITION:
-      parameters:
-        [{ANGLE:"UInt8"}]
-    PAUSE: true
-    ABORT: true
-    SET_PLATFORM_TEMP: 
-      parameters:
-        [{TEMPERATURE: "Int16LE"}]
+        [{Temperature: "Int16LE"}]
 
 
 
