@@ -1,0 +1,39 @@
+#! /usr/sbin/dtrace -s
+#pragma D option quiet
+
+ dtrace:::BEGIN 
+{
+	self->start = 0;
+}
+
+syscall::read:entry,
+syscall::read_nocancel:entry,
+syscall::write:entry,
+syscall::write_nocancel:entry
+/$$1 == fds[arg0].fi_name/
+{
+	self->start = 1;
+	self->arg0 = arg0;
+	self->arg1 = arg1;
+	self->arg2 = arg2;
+}
+
+syscall::read:return,
+syscall::read_nocancel:return,
+syscall::write:entry,
+syscall::write_nocancel:entry
+/self->start != 0 && arg0 <= 0/
+{
+	self->start = 0;
+}
+
+
+syscall::read:return,
+syscall::read_nocancel:return
+/self->start != 0 && arg0 > 0 /
+{
+	this->content = (char*) copyin(self->arg1,arg0);
+	printf("BEGINDATA%05d%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c", arg0, this->content[0],this->content[1],this->content[2],this->content[3],this->content[4],this->content[5],this->content[6],this->content[7],this->content[8],this->content[9],this->content[10],this->content[11],this->content[12],this->content[13],this->content[14],this->content[15],this->content[16],this->content[17],this->content[18],this->content[19],this->content[20],this->content[21],this->content[22],this->content[23],this->content[24],this->content[25],this->content[26],this->content[27],this->content[28],this->content[29],this->content[30],this->content[31],this->content[32],this->content[33]);
+	self->start = 0;
+}
+
