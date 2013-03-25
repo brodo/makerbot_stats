@@ -1,12 +1,10 @@
+#!/usr/bin/env coffee
 # Makerbot Web API
 # ================
 # This web server provides status information about a Makerbot. It reads the binary communication
 # between a Makerbot and the computer the Makerbot is plugged into by reading two named pipes. 
 # One named pipe for the information sent by the host to the Makerbot (requests) and one for the 
 # information sent by the Makerbot to the host (responses).
-
-
-#!/usr/bin/env coffee
 
 # Libararies used
 # ---------------
@@ -22,13 +20,7 @@ app.configure ->
   app.use(app.router)
 
 # This global varbiable contains all information in `makerbot.json`
-makerbotInfos = 
-  firmwareVersion: 123
-  isBusy: false
-  currentFile: "unknown.std"
-  platformTemperature: 100
-  toolheadTemperature: 200
-  percentFinished: 12
+makerbotInfos = {}
 
 # This allows cross domain AJAX requests for everything
 app.all('/*', (req, res, next) ->
@@ -42,10 +34,13 @@ app.all('/*', (req, res, next) ->
     next()
 )
 
-app.get("/makerbot.json", (req, res) ->
+app.get("*", (req, res) ->
   res.send(200, makerbotInfos)
 )
 module.exports.server = app
+module.exports.updateInfos = (statsObject) ->
+  makerbotInfos = statsObject
+
 
 if require.main == module
   program = require('commander') # A command line option parser
@@ -63,6 +58,18 @@ if require.main == module
     .option("-w --request <filename>", 
       "specify a named pipe which contains the binary data sent to the Makerbot")
     .parse(process.argv)
-  
-    app.listen(program.port)
-    console.log(clc.green("Listening on port #{program.port}")) 
+  makerbotInfos =   
+    "HostVersion": 123
+    "FirmwareVersion": 456
+    "IsFinished": 0
+    "BuildName": "egg"
+    "BuildState": 2
+    "HoursElapsed": 1
+    "MinutesElapsed": 20
+    "LineNumber": 1555
+    "Message": "We <3 manking stuff"
+    "Percent": 45
+    "ToolheadTemperature": 150
+    "PlatformTemperature": 33
+  app.listen(program.port)
+  console.log(clc.green("Listening on port #{program.port}")) 

@@ -53,7 +53,7 @@ module.exports  =
           {Name: "String"}]
     GetBuildName:
       responseParameters:
-        {Name: "String"}
+        {BuildName: "String"}
     GetExtendedPosition:
       responseParameters:
         [ {XPosition: "Int32LE"},
@@ -244,7 +244,7 @@ module.exports  =
         [{FirmwareVersion: "UInt16LE"}]
     GetToolheadTemp:
       responseParameters:
-        [{CurrentTemp: "Int16LE"}]
+        [{ToolheadTemperature: "Int16LE"}]
     GetMotor1SpeedRpm:
       responseParameters:
         [{RotationDuration: "UInt32LE"}]
@@ -296,7 +296,7 @@ module.exports  =
     Abort: true
     SetPlatformTemp: 
       parameters:
-        [{Temperature: "Int16LE"}]
+        [{PlatformTargetTemperature: "Int16LE"}]
 
 
 

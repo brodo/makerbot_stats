@@ -249,7 +249,7 @@ module.exports.readResponsetByte = readDTraceStateMachine.read
 
 if require.main == module
   fs = require('fs')
-  requestFileStream = fs.createReadStream("../serialdata/write", {bufferSize: 10})
+  requestFileStream = fs.createReadStream( "../serialdata/write", {bufferSize: 10})
   responseFileStream = fs.createReadStream("../serialdata/read", {bufferSize: 10})
 
   requestFileStream.on('data', (data) ->
