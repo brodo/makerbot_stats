@@ -1,0 +1,31 @@
+{
+  "name": "mackerbot-stats",
+  "preferGlobal": true,
+  "version": "0.2.0",
+  "author": "Julian Dax <julian.dax@me.com>",
+  "description": "build information from your Makerbot as a simple web service",
+  "bin": {
+    "mackerbot-stats": "./bin/mackerbot-stats"
+  },
+  "scripts": {
+    "start": "node ./bin/http-server",
+    "test": "vows --spec --isolate",
+    "predeploy": "echo This will be run before deploying the app",
+    "postdeploy": "echo This will be run after deploying the app"
+  },
+  "main": "./lib/s3g",
+  "keywords": [
+    "makerbot",
+    "reprap",
+  ],
+  "dependencies" : {
+    "commander"    :  "1.1.x",
+    "cli-color"    :  "0.2.x",
+    "express"      :  "3.1.x",
+    "coffee-script": "1.6.x"         
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=0.7"
+  }
+}
