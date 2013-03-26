@@ -59,7 +59,6 @@ The stdout ouf the DTrace script needs to be decoded from binary to JSON objects
       s3g.readRequestByte(byte) for byte in data 
     )
     read.stdout.on('data', (data) ->
-      console.log("READ")
       s3g.readRequestByte(byte) for byte in data
     )
 
