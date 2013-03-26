@@ -32,7 +32,7 @@ PacketStart = s3g_constants.byteNames.Other.Packet
 # ```
 
 class DTraceOutputStateMachine
-  constructor: (@callblack) ->
+  constructor: (@callback) ->
     @state = "WAITING"
     @startString = "BEGINDATA"
     @bufferSize = @startString.length
@@ -41,7 +41,7 @@ class DTraceOutputStateMachine
     @sizeStr = ""
     @contentLength = 0
     @currentPosition = 0
-  read: (byte) ->
+  read: (byte) =>
     switch @state
       when "WAITING"
         if @charBuffer.length == @bufferSize
@@ -61,7 +61,7 @@ class DTraceOutputStateMachine
           @sizeStr = ""
           @state = "CONTENT"
       when "CONTENT"
-        @callblack(byte)
+        @callback(byte)
         @currentPosition += 1
         if @currentPosition == @contentLength
           @currentPosition = 0
@@ -233,8 +233,14 @@ responsePacketStateMachine = new S3GPacketStateMachine((buffer) ->
     if module.exports.callback then module.exports.callback(packet) else console.log(packet)
 )
 
-writeDTraceStateMachine = new DTraceOutputStateMachine((byte) -> requestPacketStateMachine.read(byte))
-readDTraceStateMachine = new DTraceOutputStateMachine((byte) -> responsePacketStateMachine.read(byte))
+writeDTraceStateMachine = new DTraceOutputStateMachine(
+  (byte) ->
+    requestPacketStateMachine.read(byte)
+)
+readDTraceStateMachine = new DTraceOutputStateMachine(
+  (byte) -> 
+    responsePacketStateMachine.read(byte)
+  )
 
 module.exports.readRequestByte = writeDTraceStateMachine.read
 module.exports.readResponsetByte = readDTraceStateMachine.read

@@ -33,16 +33,15 @@ Makerbot Stats needs to know which tty it should listen in on, every other argum
     console.log("Listening on Port " + clc.green(program.port))
 
 DTrace
-------
+------""
 Makerbot Stats starts two instances of DTrace: One caputres every write operation to the tty, and 
 the other caputres every read operation. DTrace needs to run with root rights.
     
     tty = program.args[0]
     sudo = require('sudo')
-    console.log("MakerBot Stats needs your password to start DTrace.")
     options = 
       cachePassword: true,
-      prompt: 'Please enter your password'
+      prompt: 'MakerBot Stats needs your password to start DTrace. Please enter your password:'
     write = sudo([ 'dtrace', '-s', '../dtrace/makerbotsniff_write', tty ], options)
     read = sudo([ 'dtrace', '-s', '../dtrace/makerbotsniff_read', tty ], options)
     
@@ -60,6 +59,7 @@ The stdout ouf the DTrace script needs to be decoded from binary to JSON objects
       s3g.readRequestByte(byte) for byte in data 
     )
     read.stdout.on('data', (data) ->
+      console.log("READ")
       s3g.readRequestByte(byte) for byte in data
     )
 

@@ -65,11 +65,11 @@ if require.main == module
     "BuildName": "egg"
     "BuildState": 2
     "HoursElapsed": 1
-    "MinutesElapsed": 20
+    "MinutesElapsed": 50
     "LineNumber": 1555
     "Message": "We <3 manking stuff"
     "Percent": 45
-    "ToolheadTemperature": 150
+    "ToolheadTemperature": 170
     "PlatformTemperature": 33
   app.listen(program.port)
   console.log(clc.green("Listening on port #{program.port}")) 
