@@ -59,12 +59,14 @@ The stdout ouf the DTrace script needs to be decoded from binary to JSON objects
       s3g.readRequestByte(byte) for byte in data 
     )
     read.stdout.on('data', (data) ->
-      s3g.readRequestByte(byte) for byte in data
+      s3g.readResponseByte(byte) for byte in data
     )
 
     interestingParameters = require("../lib/interesting_parameters")
     
     s3g.callback = (packet) ->
+      console.log(packet)
+      if packet.ToolIndex == 1 and (packet.PlatformTemperature? or packet.ToolheadTemperature?) then return
       makerbotStatsObject[name] = value for name, value of packet when name in interestingParameters
       server.updateInfos(makerbotStatsObject)
 

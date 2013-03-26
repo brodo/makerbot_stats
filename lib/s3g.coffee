@@ -233,17 +233,12 @@ responsePacketStateMachine = new S3GPacketStateMachine((buffer) ->
     if module.exports.callback then module.exports.callback(packet) else console.log(packet)
 )
 
-writeDTraceStateMachine = new DTraceOutputStateMachine(
-  (byte) ->
-    requestPacketStateMachine.read(byte)
-)
-readDTraceStateMachine = new DTraceOutputStateMachine(
-  (byte) -> 
-    responsePacketStateMachine.read(byte)
-  )
+writeDTraceStateMachine = new DTraceOutputStateMachine((byte) -> requestPacketStateMachine.read(byte))
+
+readDTraceStateMachine = new DTraceOutputStateMachine((byte) -> responsePacketStateMachine.read(byte))
 
 module.exports.readRequestByte = writeDTraceStateMachine.read
-module.exports.readResponsetByte = readDTraceStateMachine.read
+module.exports.readResponseByte = readDTraceStateMachine.read
 
 # Running from the Command line
 # -----------------------------

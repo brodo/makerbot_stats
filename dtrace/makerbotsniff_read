@@ -7,9 +7,7 @@
 }
 
 syscall::read:entry,
-syscall::read_nocancel:entry,
-syscall::write:entry,
-syscall::write_nocancel:entry
+syscall::read_nocancel:entry
 /$$1 == fds[arg0].fi_name/
 {
 	self->start = 1;
@@ -19,9 +17,7 @@ syscall::write_nocancel:entry
 }
 
 syscall::read:return,
-syscall::read_nocancel:return,
-syscall::write:entry,
-syscall::write_nocancel:entry
+syscall::read_nocancel:return
 /self->start != 0 && arg0 <= 0/
 {
 	self->start = 0;
