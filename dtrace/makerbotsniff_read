@@ -8,7 +8,7 @@
 
 syscall::read:entry,
 syscall::read_nocancel:entry
-/$$1 == fds[arg0].fi_name/
+/fds[arg0].fi_name == $$1 || fds[arg0].fi_name == $$2/
 {
 	self->start = 1;
 	self->arg0 = arg0;

@@ -53,26 +53,37 @@ byteNames =
   ToolQueryCommands: 
     GetVersion: 0
     GetToolheadTemp: 2
+    GetFilamentStatus: 16
     GetMotor1SpeedRpm: 17
+    GetMotor2SpeedRpm: 18
+    GetMotor1SpeedPwm: 19
+    GetMotor2SpeedPwm: 20
     IsToolReady: 22
     ReadFromEeprom: 25
     WriteToEeprom: 26
     GetPlatformTemp: 30
     GetToolheadTargetTemp: 32
     GetPlatformTargetTemp: 33
+    GetFirmwareBuildName: 34
     IsPlatformReady: 35
     GetToolStatus: 36
     GetPidState: 37
   ToolActionCommands: 
     Init: 1
     SetToolheadTargetTemp: 3
+    SetMotor1SpeedPwm: 4
+    SetMotor2SpeedPwm: 5
     SetMotor1SpeedRpm: 6
+    SetMotor2SpeedRpm: 7
     SetMotor1Direction: 8
+    SetMotor2Direction: 9
     ToggleMotor1: 10
+    ToggleMotor2: 11
     ToggleFan: 12
     ToggleExtraOutput: 13
     SetServo1Position: 14
     SetServo2Position: 15
+    SelectTool: 21
     Pause: 23
     Abort: 24
     ToggleAbp: 27

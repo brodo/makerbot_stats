@@ -42,8 +42,8 @@ the other caputres every read operation. DTrace needs to run with root rights.
     options = 
       cachePassword: true,
       prompt: 'MakerBot Stats needs your password to start DTrace. Please enter your password:'
-    write = sudo([ 'dtrace', '-s', '../dtrace/makerbotsniff_write', tty ], options)
-    read = sudo([ 'dtrace', '-s', '../dtrace/makerbotsniff_read', tty ], options)
+    write = sudo([ 'dtrace', '-s', '../dtrace/makerbotsniff_write', "tty.#{tty}", "cu.#{tty}" ], options)
+    read = sudo([ 'dtrace', '-s', '../dtrace/makerbotsniff_read', "tty.#{tty}", "cu.#{tty}" ], options)
     
     
 

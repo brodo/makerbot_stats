@@ -77,6 +77,9 @@ module.exports  =
           {MinutesElapsed: "UInt8"},
           {LineNumber: "UInt32LE"},
           {Reserved: "UInt32LE"} ]
+    GetFilamentStatus:
+      responseParameters:
+        [{FillamentPercent: "UInt8"}]
     GetCommunicationStats:
       responseParameters:
         [ {PacketsReceived: "UInt32LE"},
@@ -245,7 +248,16 @@ module.exports  =
     GetToolheadTemp:
       responseParameters:
         [{ToolheadTemperature: "Int16LE"}]
+    GetMotor1SpeedPwm:
+      responseParameters:
+        [{"Motor1Pwm" : "UInt8"}]
+    GetMotor2SpeedPwm:
+      responseParameters:
+        [{"Motor2Pwm" : "UInt8"}]
     GetMotor1SpeedRpm:
+      responseParameters:
+        [{RotationDuration: "UInt32LE"}]
+    GetMotor2SpeedRpm:
       responseParameters:
         [{RotationDuration: "UInt32LE"}]
     IsToolReady:
@@ -257,6 +269,9 @@ module.exports  =
     GetToolheadTargetTemp:
       responseParameters:
         [{ToolheadTargetTemperature: "Int16LE"}]
+    GetFirmwareBuildName:
+      responseParameters:
+        [{"BuildName" : "String"}]
     GetPlatformTargetTemp:
       responseParameters:
         [{PlatformTargetTemperature: "Int16LE"}]
@@ -277,10 +292,28 @@ module.exports  =
     SetToolheadTargetTemp:
       parameters:
         [{TargetTemperature: "Int16LE"}]
+    SetMotor1SpeedPwm:
+      parameters:
+        [{PWMSpeed: "UInt8"}]
+    SetMotor2SpeedPwm:
+      parameters:
+        [{PWMSpeed: "UInt8"}]
     SetMotor1SpeedRpm:
       parameters:
         [ {RotationDuration: "UInt32LE"} ]
+    SetMotor2SpeedRpm:
+      parameters:
+        [ {RotationDuration: "UInt32LE"} ]
+    SetMotor1Direction:
+      parameters:
+        [ {Clockwise: "UInt8"} ]
+    SetMotor2Direction:
+      parameters:
+        [ {Clockwise: "UInt8"} ] 
     ToggleMotor1:
+      parameters:
+        [{Bitfield: "UInt8"}]
+    ToggleMotor2:
       parameters:
         [{Bitfield: "UInt8"}]
     ToggleFan:
@@ -292,6 +325,7 @@ module.exports  =
     SetServo1Position:
       parameters:
         [{Angle:"UInt8"}]
+    SelectTool: true
     Pause: true
     Abort: true
     SetPlatformTemp: 
