@@ -19,6 +19,7 @@ s3g_states = require('./s3g_states')
 # ----------------
 UnansweredPackageResponseQueue = []
 ResponseBufferQueue = []
+ToolIndexQueue = []
 PacketStart = s3g_constants.byteNames.Other.Packet
 
 # DTraceOutputStateMachine
@@ -179,9 +180,12 @@ class Packet
     queryBytes = payload[offset..]
     # The first byte of the tool query is the command byte
     @ToolCommand = s3g_constants.nameForToolByte(queryBytes[0])
+    console.log(queryBytes)
+    console.log(@ToolCommand)
     # The `responseParameters` of the tool packet become the `responseParametres` of the host packet.
     @responseParameters = s3g_states[@ToolCommand].responseParameters
     toolParameters = s3g_states[@ToolCommand].parameters
+    ToolIndexQueue.push(@ToolIndex)
     @parse(toolParameters, queryBytes[1..])
   # Reads a tool arguments parameter.
   # ```
@@ -195,7 +199,7 @@ class Packet
   readToolArguments: (offset, payload) ->
     # The `ActionCommand` is a normal integer parsed by `readToolQuery`, so we replace it by 
     # it's name.
-
+    ToolIndexQueue.push(@ToolIndex)
     @ActionCommand = s3g_constants.nameForToolByte(@ActionCommand)
     @responseParameters = s3g_states[@ActionCommand].responseParameters
     @parse(s3g_states[@ActionCommand].parameters, payload)
@@ -218,6 +222,7 @@ class ResponsePacket extends Packet
   constructor: (payload, parameters) ->
     @responseCode = s3g_constants.nameForHostByte(payload[0])
     @parse(parameters, payload)
+    @ToolIndex = ToolIndexQueue.shift()
 
 requestPacketStateMachine = new S3GPacketStateMachine((buffer) -> 
   packet = new RequestPacket(buffer)

@@ -52,7 +52,9 @@ S3GParser
 The stdout ouf the DTrace script needs to be decoded from binary to JSON objects. 
 `s3g.callback` is called by the s3g module when a packet is ready.
 
-    makerbotStatsObject = {}
+    makerbotStatsObject = 
+      Tool0: {}
+      Tool1: {}
 
     s3g = require("../lib/s3g")
     write.stdout.on('data', (data) ->
@@ -66,8 +68,14 @@ The stdout ouf the DTrace script needs to be decoded from binary to JSON objects
     
     s3g.callback = (packet) ->
       console.log(packet)
-      if packet.ToolIndex == 1 and (packet.PlatformTemperature? or packet.ToolheadTemperature?) then return
-      makerbotStatsObject[name] = value for name, value of packet when name in interestingParameters
+      if packet.ToolIndex?
+        currenttoolHeadInfo = makerbotStatsObject["Tool#{packet.ToolIndex}"]
+        unless (packet.ToolheadTemperature? and packet.ToolheadTemperature == 0) or
+          (packet.PlatformTemperature? and packet.PlatformTemperature == 0)
+            currenttoolHeadInfo[name] = value for name, value of packet when name in interestingParameters
+
+      else
+        makerbotStatsObject[name] = value for name, value of packet when name in interestingParameters
       server.updateInfos(makerbotStatsObject)
 
 
