@@ -16,7 +16,7 @@
   "main": "./lib/s3g",
   "keywords": [
     "makerbot",
-    "reprap",
+    "reprap"
   ],
   "dependencies" : {
     "commander"    :  "1.1.x",
